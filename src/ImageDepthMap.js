@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import Sketch from './Sketch.jsx'
+import Sketch from './Sketch'
 
 const ImageDepthMap = ({ originalImg, depthImg, verticalThreshold, horizontalThreshold }) => {
   const containerRef = useRef()

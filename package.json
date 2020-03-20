@@ -1,20 +1,20 @@
 {
     "name": "react-depth-map",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "React Compontent to implement depth maps",
     "main": "./lib/ImageDepthMap.js",
     "author": "Blaine O'Brien  <blaineo@gmail.com>",
     "license": "MIT",
     "bugs": {
-      "url": "https://github.com/blaineo/react-depth-map/issues"
+        "url": "https://github.com/blaineo/react-depth-map/issues"
     },
     "homepage": "https://github.com/blaineo/react-depth-map#readme",
     "scripts": {
-        "build": "webpack"
+        "build": "webpack",
+        "start": "webpack --watch"
     },
     "peerDependencies": {
-        "react": "^16.9.0",
-        "react-device-detect": "^1.9.9"
+        "react": "^16.9.0"
     },
     "devDependencies": {
         "@babel/core": "^7.6.2",
