@@ -1,9 +1,12 @@
 # React Depth Map Component
 React component that implements depth maps, adding a 3D effect to 2D images
 
+This component was adapted from an older repo developed by Yuri Artiukh [here](https://github.com/akella/fake3d)
+The gyroscopic functionality was removed because Apple now requires a user-activated approval. ( too many steps for a good user to experience )
+
 Follow the photoshop portion of [This Tutorial](https://redstapler.co/3d-photo-from-image-javascript-tutorial/) to help you make the assets needed for this component. 
 
-![alt text](depth-map-example.gif "Logo Title Text 1")
+![alt text](https://blaine-assets.s3-us-west-1.amazonaws.com/depth-map-example.gif "Logo Title Text 1")
 
 
 ### To Use
@@ -23,6 +26,9 @@ import ImageDepthMap from 'react-depth-map'
       horizontalThreshold={15}
     />
 ```
+
+The component grows to the size of it's container ( or the natural size of the images )
+
 
 | Prop        | Type           | Value  |
 | ------------- |:-------------:| -----:|

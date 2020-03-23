@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { isMobile } from 'react-device-detect'
 import fragment from 'raw-loader!glslify-loader!./shaders/fragment.glsl'
 import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
@@ -9,7 +9,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, useGravity, mu
     imageOriginal,
     imageDepth
   ]
-  
+
   let imageAspect = 1
   let mouseX = 0
   let mouseY = 0
