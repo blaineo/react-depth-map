@@ -30,3 +30,8 @@ import ImageDepthMap from 'react-depth-map'
 | depthImg      | Path      |   '' |
 | verticalThreshold | Int      |  1 - 25 |
 | horizontalThreshold | Int      |  1 - 25 |
+
+
+
+## Coming Soon
+* Options for responding to scroll as well as Mouse/Swipe movement
