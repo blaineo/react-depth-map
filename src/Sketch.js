@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect'
 import fragment from 'raw-loader!glslify-loader!./shaders/fragment.glsl'
 import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
 
-const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, useGravity, multiplier }) => {
+const Sketch = ({ container, imageOriginal, imageDepth, vth, hth }) => {
 
   const imageURLs = [
     imageOriginal,
@@ -51,39 +51,18 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, useGravity, mu
 
   useEffect(() => {
     if (isMobile) {
-      // if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      //   container.addEventListener('touchstart', getPermission)
-      // } else {
-      //   window.addEventListener('devicemotion', deviceMove)
-      // }
       window.addEventListener('touchmove', touchMove)
     } else {
       window.addEventListener('mousemove', mouseMove)
     }
     return () => {
       if (isMobile) {
-        // window.removeEventListener('devicemotion', deviceMove)
         window.removeEventListener('touchmove', touchMove)
       } else {
         window.removeEventListener('mousemove', mouseMove)
       }
     }
   }, [])
-
-  const getPermission = e => {
-    DeviceMotionEvent.requestPermission()
-    .then(permissionState => {
-        alert(permissionState)
-        if (permissionState === 'granted') {
-          window.addEventListener('devicemotion', deviceMove)
-        }
-      })
-      .catch( e => {
-        console.error('no dice')
-        window.addEventListener('mousemove', mouseMove)
-      })
-    container.removeEventListener('touchstart', getPermission)
-  }
 
   const addShader = (source, type) => {
     const shader = gl.createShader(type)
@@ -171,36 +150,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, useGravity, mu
     render()
   }
 
-  const gyro = () => {
-    const maxTilt = 15
-    const rotationCoef = 0.15
-
-    gn.init({ gravityNormalized: true }).then(() => {
-      gn.start(data => {
-        const y = data.do.gamma
-        const x = data.do.beta
-        mouseTargetY = clamp(x, -maxTilt, maxTilt) / maxTilt
-        mouseTargetX = -clamp(y, -maxTilt, maxTilt) / maxTilt
-
-      })
-    }).catch(e => {
-      console.log('not supported', e)
-    })
-
-  }
-
-  const deviceMove = e => {
-    const maxTilt = 15
-    // const acceleration = useGravity ? event.accelerationIncludingGravity : event.acceleration
-    const rotation = event.rotationRate || null
-    const y = rotation.gamma
-    const x = rotation.beta
-    mouseTargetY = clamp(x, -maxTilt, maxTilt) / maxTilt
-    mouseTargetX = -clamp(y, -maxTilt, maxTilt) / maxTilt
-  }
-
   const mouseMove = e => {
-    console.log(e)
     const halfX = windowWidth / 2
     const halfY = windowHeight / 2
     mouseTargetX = (halfX - e.clientX) / halfX
@@ -208,7 +158,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, useGravity, mu
   }
 
   const touchMove = e => {
-    console.log(e)
     const halfX = windowWidth / 2
     const halfY = windowHeight / 2
     mouseTargetX = (halfX - e.layerX) / halfX
@@ -288,17 +237,6 @@ Rect.verts = new Float32Array([
 
 Rect.prototype.render = function (gl) {
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-}
-
-const clamp = (number, lower, upper) => {
-  let nmbr = number
-  if (upper !== undefined) {
-    nmbr = number <= upper ? number : upper
-  }
-  if (lower !== undefined) {
-    nmbr = number >= lower ? number : lower
-  }
-  return nmbr
 }
 
 export default Sketch
