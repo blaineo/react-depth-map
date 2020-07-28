@@ -3,7 +3,7 @@ React component that implements depth maps, adding a 3D effect to 2D images
 
 This component was adapted and abstracted from an older repo developed by Yuri Artiukh [here](https://github.com/akella/fake3d)
 
-The gyroscopic functionality was removed because Apple now requires a user-activated approval. ( too many steps for a good user to experience )
+The gyroscopic functionality was removed because Apple now requires a user-activated approval. ( too many steps for a good user experience )
 
 Follow the photoshop portion of [This Tutorial](https://redstapler.co/3d-photo-from-image-javascript-tutorial/) to help you make the assets needed for this component. 
 
@@ -33,14 +33,12 @@ import ImageDepthMap from 'react-depth-map'
 
 
 
-| Prop        | Type           | Value  |
-| ------------- |:-------------:| -----:|
-| originalImage      | Path | '' |
-| depthImg      | Path      |   '' |
-| verticalThreshold | Int      |  1 - 25 |
-| horizontalThreshold | Int      |  1 - 25 |
+| Prop        | Type           | Value  | Default  |
+| ------------- |:-------------:| -----:| -----:|
+| originalImage      | Path | '' | NA |
+| depthImg      | Path  |   '' | NA |
+| verticalThreshold | Int |  1 - 25 |
+| horizontalThreshold | Int |  1 - 25 |
+| reverseMotion | Boolean      |  true, false | false |
+| respondTo | String  | mouseMove, scrollOnX, scrollOnY, scrollOnBoth | mouseMove |
 
-
-
-## Coming Soon
-* Options for responding to scroll as well as Mouse/Swipe movement

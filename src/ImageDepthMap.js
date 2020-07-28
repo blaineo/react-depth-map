@@ -1,7 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Sketch from './Sketch'
 
-const ImageDepthMap = ({ originalImg, depthImg, verticalThreshold, horizontalThreshold }) => {
+const ImageDepthMap = ({
+  originalImg,
+  depthImg,
+  verticalThreshold,
+  horizontalThreshold,
+  respondTo,
+  reverseMotion
+}) => {
   const containerRef = useRef()
   const [domReady, setDomReady] = useState(false)
 
@@ -19,6 +26,8 @@ const ImageDepthMap = ({ originalImg, depthImg, verticalThreshold, horizontalThr
         hth={horizontalThreshold}
         useGravity
         multiplier={3}
+        respondTo={respondTo || 'mouseMove'}
+        reverseMotion={reverseMotion}
       />}
     </div>
   )
