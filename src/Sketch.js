@@ -3,8 +3,7 @@ import { isMobile } from 'react-device-detect'
 import fragment from 'raw-loader!glslify-loader!./shaders/fragment.glsl'
 import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
 
-const Sketch = ({ container, imageOriginal, imageDepth, vth, hth }) => {
-
+const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, reverseMotion }) => {
   const imageURLs = [
     imageOriginal,
     imageDepth
@@ -50,16 +49,24 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth }) => {
   }, [])
 
   useEffect(() => {
-    if (isMobile) {
-      window.addEventListener('touchmove', touchMove)
+    if (respondTo === 'mouseMove') {
+      if (isMobile) {
+        window.addEventListener('touchmove', touchMove)
+      } else {
+        window.addEventListener('mousemove', mouseMove)
+      }
     } else {
-      window.addEventListener('mousemove', mouseMove)
+      window.addEventListener('scroll', scrollMove)
     }
     return () => {
-      if (isMobile) {
-        window.removeEventListener('touchmove', touchMove)
+      if (respondTo === 'mouseMove') {
+        if (isMobile) {
+          window.removeEventListener('touchmove', touchMove)
+        } else {
+          window.removeEventListener('mousemove', mouseMove)
+        }
       } else {
-        window.removeEventListener('mousemove', mouseMove)
+        window.removeEventListener('scroll', scrollMove)
       }
     }
   }, [])
@@ -153,15 +160,51 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth }) => {
   const mouseMove = e => {
     const halfX = windowWidth / 2
     const halfY = windowHeight / 2
-    mouseTargetX = (halfX - e.clientX) / halfX
-    mouseTargetY = (halfY - e.clientY) / halfY
+    const targetX = (halfX - e.clientX) / halfX
+    const targetY = (halfY - e.clientY) / halfY
+    mouseTargetX = reverseMotion ? targetX * -1 : targetX
+    mouseTargetY = reverseMotion ? targetY * -1 : targetY
   }
 
   const touchMove = e => {
     const halfX = windowWidth / 2
     const halfY = windowHeight / 2
-    mouseTargetX = (halfX - e.layerX) / halfX
-    mouseTargetY = (halfY - e.layerY) / halfY
+    const targetX = (halfX - e.layerX) / halfX
+    const targetY = (halfY - e.layerY) / halfY
+    mouseTargetX = reverseMotion ? targetX * -1 : targetX
+    mouseTargetY = reverseMotion ? targetY * -1 : targetY
+  }
+
+  const scrollMove = e => {
+    const boundingBox = container.getBoundingClientRect()
+    const height = boundingBox.height
+    const y = boundingBox.y
+    const onScreen = y < (windowHeight - height) && y > 0
+
+    if (onScreen) {
+      const scrollPcnt = (y / (windowHeight - height)).toFixed(2)
+      let targetX = 0
+      let targetY = 0
+
+      switch (respondTo) {
+        case 'scrollOnX':
+          targetX = (2 * scrollPcnt) - 1
+          break
+        case 'scrollOnY':
+          targetY = (2 * scrollPcnt) - 1
+          break
+        case 'scrollOnBoth':
+          targetX = (2 * scrollPcnt) - 1
+          targetY = (2 * scrollPcnt) - 1
+          break
+        default:
+          targetX = (2 * scrollPcnt) - 1
+          targetY = (2 * scrollPcnt) - 1
+          break
+      }
+      mouseTargetX = reverseMotion ? targetX * -1 : targetX
+      mouseTargetY = reverseMotion ? targetY * -1 : targetY
+    }
   }
 
   const render = () => {

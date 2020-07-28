@@ -1,6 +1,6 @@
 {
     "name": "react-depth-map",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "React Compontent to implement depth maps",
     "main": "./lib/ImageDepthMap.js",
     "author": "Blaine O'Brien  <blaineo@gmail.com>",
@@ -11,24 +11,27 @@
     "homepage": "https://github.com/blaineo/react-depth-map#readme",
     "scripts": {
         "build": "webpack",
-        "start": "webpack --watch"
+        "start": "webpack --watch",
+        "release": "standard-version"
     },
     "peerDependencies": {
         "react": "^16.9.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.6.2",
-        "@babel/preset-env": "^7.6.2",
-        "@babel/preset-react": "^7.0.0",
+        "@babel/core": "^7.10.5",
+        "@babel/preset-env": "^7.10.4",
+        "@babel/preset-react": "^7.10.4",
         "babel-loader": "^8.0.0",
         "path": "^0.12.7",
         "react": "^16.9.0",
-        "react-device-detect": "^1.9.9",
-        "webpack": "^4.5.0",
-        "webpack-cli": "^3.2.1"
+        "react-device-detect": "latest",
+        "react-dom": "^16.13.1",
+        "standard-version": "^8.0.2",
+        "webpack": "^4.44.0",
+        "webpack-cli": "^3.3.12"
     },
     "dependencies": {
         "glslify-loader": "^2.0.0",
-        "raw-loader": "^4.0.0"
+        "raw-loader": "^4.0.1"
     }
 }
