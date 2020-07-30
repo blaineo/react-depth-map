@@ -228,6 +228,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
 
 const loadImage = (url, callback) => {
   const image = new Image()
+  image.crossOrigin = "anonymous"
   image.src = url
   image.onload = callback
   return image
