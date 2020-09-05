@@ -1,6 +1,6 @@
-import * as React from 'react'
+import React from 'react'
 
-export interface ImageDepthMap {
+export interface ImageDepthMapProps {
     originalImg: string
     depthImg: string
     verticalThreshold?: number
@@ -11,14 +11,6 @@ export interface ImageDepthMap {
     style?: Object
 }
 
-export interface Sketch {
-    container: any
-    imageOriginal: string
-    imageDepth: string
-    vth?: number
-    hth?: number
-    useGravity?: boolean
-    multiplier?: number
-    respondTo: string
-    reverseMotion: boolean
+export default class ImageDepthMap extends React.Component<ReactPlayerProps, any> {
+
 }
