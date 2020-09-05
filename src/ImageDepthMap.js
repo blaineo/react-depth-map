@@ -7,7 +7,9 @@ const ImageDepthMap = ({
   verticalThreshold,
   horizontalThreshold,
   respondTo,
-  reverseMotion
+  reverseMotion,
+  className,
+  style
 }) => {
   const containerRef = useRef()
   const [domReady, setDomReady] = useState(false)
@@ -17,7 +19,7 @@ const ImageDepthMap = ({
   }, [])
 
   return (
-    <div ref={containerRef} className='image-DepthMap'>
+    <div ref={containerRef} className={`image-DepthMap${className ? ' ' + className : ''}`} style={style ? style : {}}>
       {domReady && <Sketch
         container={containerRef.current}
         imageOriginal={originalImg}
