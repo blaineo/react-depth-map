@@ -28,7 +28,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     container.appendChild(canvas)
     gl = canvas.getContext('webgl')
     startTime = new Date().getTime() // Get start time for animating
-    ratio = window.devicePixelRatio    
+    ratio = window.devicePixelRatio
     createScene()
     addTexture()
   }, [])
@@ -124,6 +124,8 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
   }
 
   const start = images => {
+
+    container.classList.add('loaded')
     imageAspect = images[0].naturalHeight / images[0].naturalWidth
     let textures = []
     for (var i = 0; i < images.length; i++) {
