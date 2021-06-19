@@ -7,12 +7,12 @@ The gyroscopic functionality was removed because Apple now requires a user-activ
 
 Follow the photoshop portion of [This Tutorial](https://redstapler.co/3d-photo-from-image-javascript-tutorial/) to help you make the assets needed for this component. 
 
-![alt text](https://blaine-assets.s3-us-west-1.amazonaws.com/depth-map-example.gif "3D Basketball")
+![3D Basketball](https://blaine-assets.s3-us-west-1.amazonaws.com/depth-map-example.gif)
 
 
 ### To Use
 ```
-npm install react-depth-component
+npm install react-depth-map
 ```
 
 ```javascript
