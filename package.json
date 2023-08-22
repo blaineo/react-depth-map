@@ -1,14 +1,14 @@
 {
     "name": "react-depth-map-component",
-    "version": "1.1.2",
+    "version": "1.2.3",
     "description": "React Component to implement depth maps",
     "main": "./lib/ImageDepthMapComponent.js",
     "author": "Giorgi Batiashvili  <giorgi.batiashvili@gmail.com>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/blaineo/react-depth-map/issues"
+        "url": "https://github.com/story-tools-studio/react-depth-map-component/issues"
     },
-    "homepage": "https://github.com/blaineo/react-depth-map#readme",
+    "homepage": "https://github.com/story-tools-studio/react-depth-map-component#readme",
     "scripts": {
         "build": "webpack",
         "start": "webpack --watch",

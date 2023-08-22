@@ -5,7 +5,7 @@ import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
 import GyroNorm from './lib/gyronorm';
 const gn = new GyroNorm.GyroNorm();
 
-const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, reverseMotion }) => {
+const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, reverseMotion, useGravity }) => {
   const imageURLs = [
     imageOriginal,
     imageDepth
@@ -59,7 +59,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
         } else {
           window.addEventListener('devicemotion', deviceMove)
         }
-        window.addEventListener('touchmove', touchMove)
       } else {
         window.addEventListener('mousemove', mouseMove)
       }
@@ -70,7 +69,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
       if (respondTo === 'mouseMove') {
         if (isMobile) {
           window.removeEventListener('devicemotion', deviceMove)
-          window.removeEventListener('touchmove', touchMove)
         } else {
           window.removeEventListener('mousemove', mouseMove)
         }
@@ -123,9 +121,9 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     uThreshold = new Uniform('threshold', '2f', program, gl)
     // create position attrib
     billboard = new Rect(gl)
-    const positionLocation = gl.getAttribLocation(program, 'a_position')
-    gl.enableVertexAttribArray(positionLocation)
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
+    const positionLocation = gl.getAttribLocation(program, 'a_position');
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
   }
 
   const addTexture = () => {
@@ -136,7 +134,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     container.classList.add('loaded')
     imageAspect = images[0].naturalHeight / images[0].naturalWidth
     let textures = []
-    for (var i = 0; i < images.length; i++) {
+    for (let i = 0; i < images.length; i++) {
       const texture = gl.createTexture()
       gl.bindTexture(gl.TEXTURE_2D, texture)
       // Set the parameters so we can render any size image.
@@ -182,28 +180,30 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
   }
 
   const gyro = () => {
-    const maxTilt = 15
-    const rotationCoef = 0.15
+    const maxTilt = 18
+    const rotationCoef = 0.40
 
-    gn.init({ gravityNormalized: false }).then(() => {
+    gn.init({ gravityNormalized: useGravity }).then(() => {
       gn.start(data => {
-        const y = data.do.gamma
-        const x = data.do.beta
+        const y = data.do.gamma * rotationCoef
+        const x = data.do.beta * rotationCoef
         mouseTargetY = clamp(x, -maxTilt, maxTilt) / maxTilt
         mouseTargetX = -clamp(y, -maxTilt, maxTilt) / maxTilt
 
       })
     }).catch(e => {
-      console.log('not supported', e)
+      console.log('not supported')
     })
   }
 
   const deviceMove = e => {
-    const maxTilt = 15
-    // const acceleration = useGravity ? event.accelerationIncludingGravity : event.acceleration
-    const rotation = event.rotationRate || null
-    const y = rotation.gamma
-    const x = rotation.beta
+    const maxTilt = 18
+    const rotationCoef = 0.40
+
+    const rotation = e.rotationRate || null
+
+    const y = rotation.gamma * rotationCoef
+    const x = rotation.beta * rotationCoef
     mouseTargetY = clamp(x, -maxTilt, maxTilt) / maxTilt
     mouseTargetX = -clamp(y, -maxTilt, maxTilt) / maxTilt
   }
@@ -217,15 +217,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     mouseTargetY = reverseMotion ? targetY * -1 : targetY
   }
 
-  const touchMove = e => {
-    const halfX = windowWidth / 2
-    const halfY = windowHeight / 2
-    const targetX = (halfX - e.layerX) / halfX
-    const targetY = (halfY - e.layerY) / halfY
-    mouseTargetX = reverseMotion ? targetX * -1 : targetX
-    mouseTargetY = reverseMotion ? targetY * -1 : targetY
-  }
-
   const scrollMove = e => {
     const boundingBox = container.getBoundingClientRect()
     const height = boundingBox.height
@@ -233,24 +224,24 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     const onScreen = y < (windowHeight - height) && y > 0
 
     if (onScreen) {
-      const scrollPcnt = (y / (windowHeight - height)).toFixed(2)
+      const scrollPercent = (y / (windowHeight - height)).toFixed(2)
       let targetX = 0
       let targetY = 0
 
       switch (respondTo) {
         case 'scrollOnX':
-          targetX = (2 * scrollPcnt) - 1
+          targetX = (2 * scrollPercent) - 1
           break
         case 'scrollOnY':
-          targetY = (2 * scrollPcnt) - 1
+          targetY = (2 * scrollPercent) - 1
           break
         case 'scrollOnBoth':
-          targetX = (2 * scrollPcnt) - 1
-          targetY = (2 * scrollPcnt) - 1
+          targetX = (2 * scrollPercent) - 1
+          targetY = (2 * scrollPercent) - 1
           break
         default:
-          targetX = (2 * scrollPcnt) - 1
-          targetY = (2 * scrollPcnt) - 1
+          targetX = (2 * scrollPercent) - 1
+          targetY = (2 * scrollPercent) - 1
           break
       }
       mouseTargetX = reverseMotion ? targetX * -1 : targetX
@@ -285,11 +276,11 @@ const loadImage = (url, callback) => {
   return image
 }
 const loadImages = (urls, callback) => {
-  var images = []
-  var imagesToLoad = urls.length
+  let images = []
+  let imagesToLoad = urls.length
 
   // Called each time an image finished loading.
-  var onImageLoad = () => {
+  let onImageLoad = () => {
     --imagesToLoad
     // If all the images are loaded call the callback.
     if (imagesToLoad === 0) {
@@ -297,8 +288,8 @@ const loadImages = (urls, callback) => {
     }
   }
 
-  for (var ii = 0; ii < imagesToLoad; ++ii) {
-    var image = loadImage(urls[ii], onImageLoad)
+  for (let ii = 0; ii < imagesToLoad; ++ii) {
+    let image = loadImage(urls[ii], onImageLoad)
     images.push(image)
   }
 }
@@ -318,7 +309,7 @@ Uniform.prototype.set = function (...values) {
 }
 
 function Rect (gl) {
-  var buffer = gl.createBuffer()
+  let buffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
   gl.bufferData(gl.ARRAY_BUFFER, Rect.verts, gl.STATIC_DRAW)
 }

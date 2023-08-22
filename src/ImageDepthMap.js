@@ -9,6 +9,8 @@ const ImageDepthMap = ({
   respondTo,
   reverseMotion,
   className,
+  multiplier = 1,
+  useGravity = false,
   style
 }) => {
   const containerRef = useRef()
@@ -24,10 +26,9 @@ const ImageDepthMap = ({
         container={containerRef.current}
         imageOriginal={originalImg}
         imageDepth={depthImg}
-        vth={verticalThreshold}
-        hth={horizontalThreshold}
-        useGravity
-        multiplier={3}
+        vth={verticalThreshold * multiplier}
+        hth={horizontalThreshold * multiplier}
+        useGravity={useGravity}
         respondTo={respondTo || 'mouseMove'}
         reverseMotion={reverseMotion}
       />}

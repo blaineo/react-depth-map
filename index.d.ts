@@ -9,6 +9,8 @@ export interface ImageDepthMapProps {
     reverseMotion?: boolean
     className?: string
     style?: Object
+    useGravity?: boolean
+    multiplier?: number
 }
 
 export default class ImageDepthMap extends React.Component<ImageDepthMapProps, any> {
