@@ -11,6 +11,6 @@ export interface ImageDepthMapProps {
     style?: Object
 }
 
-export default class ImageDepthMap extends React.Component<ReactPlayerProps, any> {
+export default class ImageDepthMap extends React.Component<ImageDepthMapProps, any> {
 
 }

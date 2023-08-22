@@ -1,9 +1,9 @@
 {
-    "name": "react-depth-map",
-    "version": "1.0.7",
-    "description": "React Compontent to implement depth maps",
+    "name": "react-depth-map-component",
+    "version": "1.1.0",
+    "description": "React Component to implement depth maps",
     "main": "./lib/ImageDepthMap.js",
-    "author": "Blaine O'Brien  <blaineo@gmail.com>",
+    "author": "Giorgi Batiashvili  <giorgi.batiashvili@gmail.com>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/blaineo/react-depth-map/issues"

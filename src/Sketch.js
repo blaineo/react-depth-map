@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { isMobile } from 'react-device-detect'
 import fragment from 'raw-loader!glslify-loader!./shaders/fragment.glsl'
 import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
+import GyroNorm from './lib/gyronorm';
+const gn = new GyroNorm.GyroNorm();
 
 const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, reverseMotion }) => {
   const imageURLs = [
@@ -31,6 +33,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     ratio = window.devicePixelRatio
     createScene()
     addTexture()
+    gyro()
   }, [])
 
   useEffect(() => {
@@ -51,6 +54,11 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
   useEffect(() => {
     if (respondTo === 'mouseMove') {
       if (isMobile) {
+        if (typeof DeviceMotionEvent.requestPermission === 'function') {
+          container.addEventListener('touchstart', getPermission)
+        } else {
+          window.addEventListener('devicemotion', deviceMove)
+        }
         window.addEventListener('touchmove', touchMove)
       } else {
         window.addEventListener('mousemove', mouseMove)
@@ -61,6 +69,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     return () => {
       if (respondTo === 'mouseMove') {
         if (isMobile) {
+          window.removeEventListener('devicemotion', deviceMove)
           window.removeEventListener('touchmove', touchMove)
         } else {
           window.removeEventListener('mousemove', mouseMove)
@@ -124,7 +133,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
   }
 
   const start = images => {
-
     container.classList.add('loaded')
     imageAspect = images[0].naturalHeight / images[0].naturalWidth
     let textures = []
@@ -157,6 +165,48 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     // start application
     resizeHandler()
     render()
+  }
+
+  const getPermission = e => {
+    DeviceMotionEvent.requestPermission()
+        .then(permissionState => {
+          alert(permissionState)
+          if (permissionState === 'granted') {
+            window.addEventListener('devicemotion', deviceMove)
+          }
+        })
+        .catch( e => {
+          console.error('no dice')
+          window.addEventListener('mousemove', mouseMove)
+        })
+    container.removeEventListener('touchstart', getPermission)
+  }
+
+  const gyro = () => {
+    const maxTilt = 15
+    const rotationCoef = 0.15
+
+    gn.init({ gravityNormalized: true }).then(() => {
+      gn.start(data => {
+        const y = data.do.gamma
+        const x = data.do.beta
+        mouseTargetY = clamp(x, -maxTilt, maxTilt) / maxTilt
+        mouseTargetX = -clamp(y, -maxTilt, maxTilt) / maxTilt
+
+      })
+    }).catch(e => {
+      console.log('not supported', e)
+    })
+  }
+
+  const deviceMove = e => {
+    const maxTilt = 15
+    // const acceleration = useGravity ? event.accelerationIncludingGravity : event.acceleration
+    const rotation = event.rotationRate || null
+    const y = rotation.gamma
+    const x = rotation.beta
+    mouseTargetY = clamp(x, -maxTilt, maxTilt) / maxTilt
+    mouseTargetX = -clamp(y, -maxTilt, maxTilt) / maxTilt
   }
 
   const mouseMove = e => {
@@ -219,7 +269,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     mouseX = nMX
     mouseY = nMY
     uMouse.set(nMX, nMY)
-    
+
     // render
     billboard.render(gl)
     requestAnimationFrame(render)
@@ -284,5 +334,17 @@ Rect.verts = new Float32Array([
 Rect.prototype.render = function (gl) {
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
+
+const clamp = (number, lower, upper) => {
+  let nmbr = number
+  if (upper !== undefined) {
+    nmbr = number <= upper ? number : upper
+  }
+  if (lower !== undefined) {
+    nmbr = number >= lower ? number : lower
+  }
+  return nmbr
+}
+
 
 export default Sketch
