@@ -170,7 +170,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
   const getPermission = e => {
     DeviceMotionEvent.requestPermission()
         .then(permissionState => {
-          alert(permissionState)
           if (permissionState === 'granted') {
             window.addEventListener('devicemotion', deviceMove)
           }
@@ -186,7 +185,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
     const maxTilt = 15
     const rotationCoef = 0.15
 
-    gn.init({ gravityNormalized: true }).then(() => {
+    gn.init({ gravityNormalized: false }).then(() => {
       gn.start(data => {
         const y = data.do.gamma
         const x = data.do.beta
