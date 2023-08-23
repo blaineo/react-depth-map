@@ -11,6 +11,7 @@ const ImageDepthMap = ({
   className,
   multiplier = 1,
   useGravity = false,
+  rotationCoef = 0.4,
   style
 }) => {
   const containerRef = useRef()
@@ -31,6 +32,7 @@ const ImageDepthMap = ({
         useGravity={useGravity}
         respondTo={respondTo || 'mouseMove'}
         reverseMotion={reverseMotion}
+        rotationCoef={rotationCoef}
       />}
     </div>
   )

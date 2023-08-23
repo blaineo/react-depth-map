@@ -5,7 +5,7 @@ import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
 import GyroNorm from './lib/gyronorm';
 const gn = new GyroNorm.GyroNorm();
 
-const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, reverseMotion, useGravity }) => {
+const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, reverseMotion, useGravity, rotationCoef = 0.4 }) => {
   const imageURLs = [
     imageOriginal,
     imageDepth
@@ -181,7 +181,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
 
   const gyro = () => {
     const maxTilt = 18
-    const rotationCoef = 0.40
 
     gn.init({ gravityNormalized: useGravity }).then(() => {
       gn.start(data => {
@@ -198,8 +197,6 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
 
   const deviceMove = e => {
     const maxTilt = 18
-    const rotationCoef = 0.40
-
     const rotation = e.rotationRate || null
 
     const y = rotation.gamma * rotationCoef
