@@ -1,6 +1,6 @@
 {
     "name": "react-depth-map-component",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "description": "React Component to implement depth maps",
     "main": "./lib/ImageDepthMapComponent.js",
     "author": "Giorgi Batiashvili  <giorgi.batiashvili@gmail.com>",

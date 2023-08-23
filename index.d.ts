@@ -11,6 +11,7 @@ export interface ImageDepthMapProps {
     style?: Object
     useGravity?: boolean
     multiplier?: number
+    rotationCoef?: number
 }
 
 export default class ImageDepthMap extends React.Component<ImageDepthMapProps, any> {
