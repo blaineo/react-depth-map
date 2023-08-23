@@ -180,7 +180,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
   }
 
   const gyro = () => {
-    const maxTilt = 18
+    const maxTilt = 16
 
     gn.init({ gravityNormalized: useGravity }).then(() => {
       gn.start(data => {
@@ -196,7 +196,7 @@ const Sketch = ({ container, imageOriginal, imageDepth, vth, hth, respondTo, rev
   }
 
   const deviceMove = e => {
-    const maxTilt = 18
+    const maxTilt = 16
     const rotation = e.rotationRate || null
 
     const y = rotation.gamma * rotationCoef
@@ -323,15 +323,14 @@ Rect.prototype.render = function (gl) {
 }
 
 const clamp = (number, lower, upper) => {
-  let nmbr = number
   if (upper !== undefined) {
-    nmbr = number <= upper ? number : upper
+    number = Math.min(number, upper);
   }
   if (lower !== undefined) {
-    nmbr = number >= lower ? number : lower
+    number = Math.max(number, lower);
   }
-  return nmbr
-}
+  return number;
+};
 
 
 export default Sketch
