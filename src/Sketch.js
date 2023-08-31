@@ -48,10 +48,6 @@ const Sketch = ({
         createScene()
         addTexture()
         gyro()
-
-        return () => {
-            gl.getExtension('WEBGL_lose_context').loseContext();
-        }
     }, [])
 
     useEffect(() => {
