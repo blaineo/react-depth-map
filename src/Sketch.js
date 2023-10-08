@@ -56,8 +56,10 @@ const Sketch = ({
     }, [imageOriginal, imageDepth])
 
     useEffect(() => {
-        addTexture()
-    }, [imageURLs])
+        if (gl) {
+            addTexture()
+        }
+    }, [imageURLs, gl])
 
     useEffect(() => {
         let timeoutId = null
@@ -215,7 +217,7 @@ const Sketch = ({
 
             })
         }).catch(e => {
-            console.debug('not supported')
+            console.debug('gyroscope on this device is not supported')
         })
     }
 
