@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import fragment from 'raw-loader!glslify-loader!./shaders/fragment.glsl'
 import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
-import GyroNorm from './lib/gyronorm';
+import GyroNorm from './lib/gyronorm'
 
-const gn = new GyroNorm.GyroNorm();
+const gn = new GyroNorm.GyroNorm()
 
 const Sketch = ({
     container,
@@ -20,10 +20,7 @@ const Sketch = ({
     rotationAmountX,
     rotationAmountY
 }) => {
-    const imageURLs = [
-        imageOriginal,
-        imageDepth
-    ]
+    const [imageURLs, setImageURLs] = useState([imageOriginal, imageDepth])
 
     let imageAspect = 1
     let mouseX = 0
@@ -43,12 +40,24 @@ const Sketch = ({
         canvas = document.createElement('canvas')
         container.appendChild(canvas)
         gl = canvas.getContext('webgl')
+        canvas.get
         startTime = new Date().getTime() // Get start time for animating
         ratio = window.devicePixelRatio
         createScene()
-        addTexture()
         gyro()
+
+        return () => {
+            gl.getExtension('WEBGL_lose_context').loseContext()
+        }
     }, [])
+
+    useEffect(() => {
+        setImageURLs([imageOriginal, imageDepth])
+    }, [imageOriginal, imageDepth])
+
+    useEffect(() => {
+        addTexture()
+    }, [imageURLs])
 
     useEffect(() => {
         let timeoutId = null
@@ -135,9 +144,9 @@ const Sketch = ({
         uThreshold = new Uniform('threshold', '2f', program, gl)
         // create position attrib
         billboard = new Rect(gl)
-        const positionLocation = gl.getAttribLocation(program, 'a_position');
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        const positionLocation = gl.getAttribLocation(program, 'a_position')
+        gl.enableVertexAttribArray(positionLocation)
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
     }
 
     const addTexture = () => {
@@ -206,7 +215,7 @@ const Sketch = ({
 
             })
         }).catch(e => {
-            console.log('not supported')
+            console.debug('not supported')
         })
     }
 
@@ -340,13 +349,13 @@ Rect.prototype.render = function (gl) {
 
 const clamp = (number, lower, upper) => {
     if (upper !== undefined) {
-        number = Math.min(number, upper);
+        number = Math.min(number, upper)
     }
     if (lower !== undefined) {
-        number = Math.max(number, lower);
+        number = Math.max(number, lower)
     }
-    return number;
-};
+    return number
+}
 
 
 export default Sketch
