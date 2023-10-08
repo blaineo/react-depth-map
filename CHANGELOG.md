@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.9](https://github.com/story-tools-studio/react-depth-map-component/compare/v1.3.8...v1.3.9) (2023-10-08)
+
 ### [1.3.8](https://github.com/story-tools-studio/react-depth-map-component/compare/v1.3.7...v1.3.8) (2023-10-08)
 
 ### 1.3.7 (2023-10-08)
