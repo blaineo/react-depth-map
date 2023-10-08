@@ -43,8 +43,6 @@ const Sketch = ({
         canvas.get
         startTime = new Date().getTime() // Get start time for animating
         ratio = window.devicePixelRatio
-        createScene()
-        gyro()
 
         return () => {
             gl.getExtension('WEBGL_lose_context').loseContext()
@@ -58,6 +56,8 @@ const Sketch = ({
     useEffect(() => {
         if (gl) {
             addTexture()
+            createScene()
+            gyro()
         }
     }, [imageURLs, gl])
 
