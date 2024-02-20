@@ -35,6 +35,8 @@ const Sketch = ({
     let uRatio
     let uThreshold
     let billboard
+    let u_image0Location
+    let u_image1Location
 
     useEffect(() => {
         canvas = document.createElement('canvas')
@@ -77,31 +79,33 @@ const Sketch = ({
     }, [])
 
     useEffect(() => {
-        if (respondTo === 'mouseMove') {
-            if (isMobile) {
-                if (typeof DeviceMotionEvent.requestPermission === 'function') {
-                    container.addEventListener('touchstart', getPermission)
-                } else {
-                    window.addEventListener('devicemotion', deviceMove)
-                }
-            } else {
-                window.addEventListener('mousemove', mouseMove)
-            }
-        } else {
-            window.addEventListener('scroll', scrollMove)
-        }
-        return () => {
+        if(u_image0Location) {
             if (respondTo === 'mouseMove') {
                 if (isMobile) {
-                    window.removeEventListener('devicemotion', deviceMove)
+                    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                        container.addEventListener('touchstart', getPermission)
+                    } else {
+                        window.addEventListener('devicemotion', deviceMove)
+                    }
                 } else {
-                    window.removeEventListener('mousemove', mouseMove)
+                    window.addEventListener('mousemove', mouseMove)
                 }
             } else {
-                window.removeEventListener('scroll', scrollMove)
+                window.addEventListener('scroll', scrollMove)
+            }
+            return () => {
+                if (respondTo === 'mouseMove') {
+                    if (isMobile) {
+                        window.removeEventListener('devicemotion', deviceMove)
+                    } else {
+                        window.removeEventListener('mousemove', mouseMove)
+                    }
+                } else {
+                    window.removeEventListener('scroll', scrollMove)
+                }
             }
         }
-    }, [])
+    }, [u_image0Location])
 
     const addShader = (source, type) => {
         const shader = gl.createShader(type)
@@ -149,6 +153,10 @@ const Sketch = ({
         const positionLocation = gl.getAttribLocation(program, 'a_position')
         gl.enableVertexAttribArray(positionLocation)
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0)
+
+        // lookup the sampler locations.
+        u_image0Location = gl.getUniformLocation(program, 'image0')
+        u_image1Location = gl.getUniformLocation(program, 'image1')
     }
 
     const addTexture = () => {
@@ -173,10 +181,6 @@ const Sketch = ({
             textures.push(texture)
         }
 
-        // lookup the sampler locations.
-        let u_image0Location = gl.getUniformLocation(program, 'image0')
-        let u_image1Location = gl.getUniformLocation(program, 'image1')
-
         // set which texture units to render with.
         gl.uniform1i(u_image0Location, 0) // texture unit 0
         gl.uniform1i(u_image1Location, 1) // texture unit 1
@@ -198,7 +202,6 @@ const Sketch = ({
                 }
             })
             .catch(e => {
-                console.error('no dice')
                 window.addEventListener('mousemove', mouseMove)
             })
         container.removeEventListener('touchstart', getPermission)
