@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import fragment from 'raw-loader!glslify-loader!./shaders/fragment.glsl'
 import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
@@ -18,10 +18,8 @@ const Sketch = ({
     rotationCoefX,
     rotationCoefY,
     rotationAmountX,
-    rotationAmountY
+    rotationAmountY,
 }) => {
-    const [imageURLs, setImageURLs] = useState([imageOriginal, imageDepth])
-
     let imageAspect = 1
     let mouseX = 0
     let mouseY = 0
@@ -42,7 +40,6 @@ const Sketch = ({
         canvas = document.createElement('canvas')
         container.appendChild(canvas)
         gl = canvas.getContext('webgl')
-        canvas.get
         startTime = new Date().getTime() // Get start time for animating
         ratio = window.devicePixelRatio
 
@@ -52,16 +49,11 @@ const Sketch = ({
     }, [])
 
     useEffect(() => {
-        setImageURLs([imageOriginal, imageDepth])
-    }, [imageOriginal, imageDepth])
-
-    useEffect(() => {
         if (gl) {
-            addTexture()
             createScene()
             gyro()
         }
-    }, [imageURLs, gl])
+    }, [gl])
 
     useEffect(() => {
         let timeoutId = null
@@ -79,7 +71,7 @@ const Sketch = ({
     }, [])
 
     useEffect(() => {
-        if(u_image0Location) {
+        setTimeout(() => {
             if (respondTo === 'mouseMove') {
                 if (isMobile) {
                     if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -93,19 +85,25 @@ const Sketch = ({
             } else {
                 window.addEventListener('scroll', scrollMove)
             }
-            return () => {
-                if (respondTo === 'mouseMove') {
-                    if (isMobile) {
-                        window.removeEventListener('devicemotion', deviceMove)
-                    } else {
-                        window.removeEventListener('mousemove', mouseMove)
-                    }
+        }, 50);
+        return () => {
+            if (respondTo === 'mouseMove') {
+                if (isMobile) {
+                    window.removeEventListener('devicemotion', deviceMove)
                 } else {
-                    window.removeEventListener('scroll', scrollMove)
+                    window.removeEventListener('mousemove', mouseMove)
                 }
+            } else {
+                window.removeEventListener('scroll', scrollMove)
             }
         }
-    }, [u_image0Location])
+    }, [])
+
+    useEffect(() => {
+        if(imageOriginal && imageDepth){
+            start([imageOriginal, imageDepth]);
+        }
+    }, [imageOriginal, imageDepth])
 
     const addShader = (source, type) => {
         const shader = gl.createShader(type)
@@ -159,10 +157,6 @@ const Sketch = ({
         u_image1Location = gl.getUniformLocation(program, 'image1')
     }
 
-    const addTexture = () => {
-        loadImages(imageURLs, start)
-    }
-
     const start = images => {
         container.classList.add('loaded')
         imageAspect = images[0].naturalHeight / images[0].naturalWidth
@@ -189,6 +183,7 @@ const Sketch = ({
         gl.bindTexture(gl.TEXTURE_2D, textures[0])
         gl.activeTexture(gl.TEXTURE1)
         gl.bindTexture(gl.TEXTURE_2D, textures[1])
+
         // start application
         resizeHandler()
         render()
@@ -293,32 +288,6 @@ const Sketch = ({
     }
 
     return null
-}
-
-const loadImage = (url, callback) => {
-    const image = new Image()
-    image.crossOrigin = "anonymous"
-    image.src = url
-    image.onload = callback
-    return image
-}
-const loadImages = (urls, callback) => {
-    let images = []
-    let imagesToLoad = urls.length
-
-    // Called each time an image finished loading.
-    let onImageLoad = () => {
-        --imagesToLoad
-        // If all the images are loaded call the callback.
-        if (imagesToLoad === 0) {
-            callback(images)
-        }
-    }
-
-    for (let ii = 0; ii < imagesToLoad; ++ii) {
-        let image = loadImage(urls[ii], onImageLoad)
-        images.push(image)
-    }
 }
 
 function Uniform(name, suffix, program, gl) {
