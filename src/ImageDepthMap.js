@@ -85,7 +85,6 @@ const Loader = () => {
         width: "150px",
       }}>
         <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
-          <!-- left line -->
           <path d="M 21 40 V 59">
             <animateTransform
                 attributeName="transform"
@@ -95,7 +94,6 @@ const Loader = () => {
                 dur="2s"
                 repeatCount="indefinite" />
           </path>
-          <!-- right line -->
           <path d="M 79 40 V 59">
             <animateTransform
                 attributeName="transform"
@@ -105,7 +103,6 @@ const Loader = () => {
                 dur="2s"
                 repeatCount="indefinite" />
           </path>
-          <!-- top line -->
           <path d="M 50 21 V 40">
             <animate
                 attributeName="d"
@@ -113,7 +110,6 @@ const Loader = () => {
                 dur="2s"
                 repeatCount="indefinite" />
           </path>
-          <!-- btm line -->
           <path d="M 50 60 V 79">
             <animate
                 attributeName="d"
@@ -121,7 +117,6 @@ const Loader = () => {
                 dur="2s"
                 repeatCount="indefinite" />
           </path>
-          <!-- top box -->
           <path d="M 50 21 L 79 40 L 50 60 L 21 40 Z">
             <animate
                 attributeName="stroke"
@@ -129,9 +124,7 @@ const Loader = () => {
                 dur="2s"
                 repeatCount="indefinite" />
           </path>
-          <!-- mid box -->
           <path d="M 50 40 L 79 59 L 50 79 L 21 59 Z"/>
-          <!-- btm box -->
           <path d="M 50 59 L 79 78 L 50 98 L 21 78 Z">
             <animate
                 attributeName="stroke"
