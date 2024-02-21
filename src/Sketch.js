@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import {isMobile} from 'react-device-detect'
+import React, { useCallback, useEffect, useState } from 'react'
+import { isMobile } from 'react-device-detect'
 import fragment from 'raw-loader!glslify-loader!./shaders/fragment.glsl'
 import vertex from 'raw-loader!glslify-loader!./shaders/vertex.glsl'
 import GyroNorm from './lib/gyronorm'
@@ -44,8 +44,22 @@ const Sketch = ({
         ratio = window.devicePixelRatio
 
         return () => {
-            gl.getExtension('WEBGL_lose_context').loseContext()
-        }
+            // Destroy WebGL context
+            if (gl) {
+                console.debug(loseContextExtension);
+                const loseContextExtension = gl.getExtension('WEBGL_lose_context');
+                if (loseContextExtension) {
+                    console.debug("removed")
+                    loseContextExtension.loseContext();
+                }
+            }
+
+            // Remove canvas from DOM
+            if (canvas && canvas.parentNode) {
+                console.debug("removed canvas")
+                canvas.parentNode.removeChild(canvas);
+            }
+        };
     }, [])
 
     useEffect(() => {
@@ -100,7 +114,7 @@ const Sketch = ({
     }, [])
 
     useEffect(() => {
-        if(imageOriginal && imageDepth){
+        if (imageOriginal && imageDepth) {
             start([imageOriginal, imageDepth]);
         }
     }, [imageOriginal, imageDepth])
@@ -206,7 +220,7 @@ const Sketch = ({
         const maxTiltX = rotationAmountX
         const maxTiltY = rotationAmountY
 
-        gn.init({gravityNormalized: useGravity}).then(() => {
+        gn.init({ gravityNormalized: useGravity }).then(() => {
             gn.start(data => {
                 const y = data.do.gamma * rotationCoefY
                 const x = data.do.beta * rotationCoefX
